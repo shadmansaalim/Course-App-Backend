@@ -12,11 +12,9 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-//shadmansaalim
-//A5nF0672qqvJi2Iq
 
 //MONGO DB
-const uri = "mongodb+srv://shadmansaalim:A5nF0672qqvJi2Iq@cluster0.up7gk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.up7gk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
@@ -25,13 +23,23 @@ async function run() {
         await client.connect();
         const database = client.db("courseApp");
         const usersCollection = database.collection("users");
-        // create a document to insert
-        const doc = {
-            title: "TEST",
-            content: "TEST",
-        }
-        const result = await usersCollection.insertOne(doc);
-        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+
+        //GET USERS API
+        app.get('/users', async (req, res) => {
+            const cursor = usersCollection.find({});
+            const users = await cursor.toArray();
+            res.send(users);
+        })
+
+
+        //POST API TO ADD USERS
+        app.post('/sign-up', async (req, res) => {
+            const newUser = req.body;
+            const result = await usersCollection.insertOne(newUser);
+            res.json(result)
+        })
+
+
     } finally {
         //   await client.close();
     }
