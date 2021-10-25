@@ -29,8 +29,21 @@ async function run() {
         //GET COURSES FROM DB
         app.get('/courses', async (req, res) => {
             const cursor = coursesCollection.find({});
-            const courses = await cursor.toArray();
-            res.send(courses);
+            const page = req.query.page;
+            const size = parseInt(req.query.size);
+            const count = await cursor.count();
+            let courses;
+            if (page) {
+                courses = await cursor.skip(page * size).limit(size).toArray();
+            }
+            else {
+                courses = await cursor.toArray();
+            }
+
+            res.send({
+                count,
+                courses
+            });
         })
 
         //GET SINGLE COURSE BY ID
