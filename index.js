@@ -46,12 +46,23 @@ async function run() {
             });
         })
 
+
         //GET SINGLE COURSE BY ID
         app.get('/course/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const course = await coursesCollection.findOne(query);
             res.send(course);
+        })
+
+        //USE POST to get data by keys
+        app.post('/courses/byKeys', async (req, res) => {
+            const keys = req.body;
+            console.log(keys);
+            const query = { courseID: { $in: keys } };
+            const courses = await coursesCollection.find(query).toArray();
+            console.log('Courses', courses);
+            res.json(courses);
         })
 
 
