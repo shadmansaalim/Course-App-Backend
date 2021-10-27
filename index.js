@@ -76,11 +76,16 @@ async function run() {
             const userEmail = req.body.email;
             const query1 = { email: userEmail };
             const orderDetails = await orderCollection.find(query1).toArray();
-            const orderedItems = orderDetails[0].order;
-            const keys = Object.keys(orderedItems)
-            const query2 = { courseID: { $in: keys } };
-            const courses = await coursesCollection.find(query2).toArray();
-            res.json(courses)
+            console.log(orderDetails);
+            if (orderDetails.length) {
+                const keys = Object.keys(orderDetails[0].order)
+                const query2 = { courseID: { $in: keys } };
+                const courses = await coursesCollection.find(query2).toArray();
+                res.json(courses)
+            }
+            else {
+                res.json(0);
+            }
         })
 
 
