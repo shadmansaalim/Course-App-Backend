@@ -4,6 +4,7 @@ const { MongoClient } = require('mongodb');
 const cors = require('cors');
 require('dotenv').config()
 const ObjectId = require('mongodb').ObjectId;
+const nodemailer = require("nodemailer");
 
 
 const app = express();
@@ -67,8 +68,19 @@ async function run() {
         app.post('/orders', async (req, res) => {
             const order = req.body;
             const result = await orderCollection.insertOne(order);
-            console.log(result);
             res.json(result);
+
+        })
+
+        app.post('/myClasses', async (req, res) => {
+            const userEmail = req.body.email;
+            const query1 = { email: userEmail };
+            const orderDetails = await orderCollection.find(query1).toArray();
+            const orderedItems = orderDetails[0].order;
+            const keys = Object.keys(orderedItems)
+            const query2 = { courseID: { $in: keys } };
+            const courses = await coursesCollection.find(query2).toArray();
+            res.json(courses)
         })
 
 
