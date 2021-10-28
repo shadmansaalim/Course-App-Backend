@@ -67,7 +67,26 @@ async function run() {
         //Add Orders API
         app.post('/orders', async (req, res) => {
             const order = req.body;
-            const result = await orderCollection.insertOne(order);
+            const orderIds = (Object.keys(req.body.order));
+            const query = { email: (order.email) };
+            const orderDetails = await orderCollection.find(query).toArray();
+            let result;
+            if (orderDetails.length) {
+                for (const id of orderIds) {
+                    (orderDetails[0].order)[id] = 1;
+                }
+                const filter = { _id: orderDetails[0]._id };
+                const updateDoc = {
+                    $set: {
+                        order: orderDetails[0].order
+                    },
+                };
+                result = await orderCollection.updateOne(filter, updateDoc);
+                console.log(result);
+            }
+            else {
+                result = await orderCollection.insertOne(order);
+            }
             res.json(result);
 
         })
@@ -75,8 +94,11 @@ async function run() {
         app.post('/myClasses', async (req, res) => {
             const userEmail = req.body.email;
             const query1 = { email: userEmail };
-            const orderDetails = await orderCollection.find(query1).toArray();
-            console.log(orderDetails);
+            //Using options to get only the order field making code efficient
+            const options = {
+                projection: { _id: 0, order: 1 }
+            }
+            const orderDetails = await orderCollection.find(query1, options).toArray();
             if (orderDetails.length) {
                 const keys = Object.keys(orderDetails[0].order)
                 const query2 = { courseID: { $in: keys } };
