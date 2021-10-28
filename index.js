@@ -67,10 +67,13 @@ async function run() {
         //Add Orders API
         app.post('/orders', async (req, res) => {
             const order = req.body;
+            //Taking the keys of order course ID in an array
             const orderIds = (Object.keys(req.body.order));
+            //Checking whether any previous order exists of same user
             const query = { email: (order.email) };
             const orderDetails = await orderCollection.find(query).toArray();
             let result;
+            //If user exists with previous orders then Updating user's previous order details rather creating new one
             if (orderDetails.length) {
                 for (const id of orderIds) {
                     (orderDetails[0].order)[id] = 1;
@@ -84,6 +87,7 @@ async function run() {
                 result = await orderCollection.updateOne(filter, updateDoc);
                 console.log(result);
             }
+            //If user doesn't exists with orders then inserting new order
             else {
                 result = await orderCollection.insertOne(order);
             }
@@ -99,6 +103,7 @@ async function run() {
                 projection: { _id: 0, order: 1 }
             }
             const orderDetails = await orderCollection.find(query1, options).toArray();
+            // Checking if user has any purchased course
             if (orderDetails.length) {
                 const keys = Object.keys(orderDetails[0].order)
                 const query2 = { courseID: { $in: keys } };
