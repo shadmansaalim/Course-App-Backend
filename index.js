@@ -51,21 +51,24 @@ async function run() {
         //GET SINGLE COURSE BY ID
         app.get('/course/:id', async (req, res) => {
             const id = req.params.id;
-            const query2 = { _id: ObjectId(id) }
-            const course = await coursesCollection.findOne(query2);
-            // const userEmail = req.query.email;
-            // let purchased = false;
-            // if (userEmail) {
-            //     const query1 = { email: (userEmail) };
-            //     const orderDetails = await orderCollection.find(query1).toArray();
-            //     const keys = Object.keys(orderDetails[0].order)
-            //     for (const key of keys) {
-            //         if (key == course.courseID) {
-            //             purchased = true;
-            //         }
-            //     }
-            // }
-            res.json(course);
+            const query1 = { _id: ObjectId(id) }
+            const course = await coursesCollection.findOne(query1);
+            const userEmail = req?.query?.email;
+            let purchased = false;
+            if (userEmail) {
+                const query2 = { email: (userEmail) };
+                const orderDetails = await orderCollection.find(query2).toArray();
+                const keys = Object.keys(orderDetails[0].order)
+                for (const key of keys) {
+                    if (key == course.courseID) {
+                        purchased = true;
+                    }
+                }
+            }
+            res.json({
+                course,
+                purchased
+            });
         })
 
         //USE POST to get data by keys
