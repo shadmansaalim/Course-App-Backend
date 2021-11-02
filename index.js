@@ -58,10 +58,12 @@ async function run() {
             if (userEmail) {
                 const query2 = { email: (userEmail) };
                 const orderDetails = await orderCollection.find(query2).toArray();
-                const keys = Object.keys(orderDetails[0].order)
-                for (const key of keys) {
-                    if (key == course.courseID) {
-                        purchased = true;
+                if (orderDetails.length) {
+                    const keys = Object.keys(orderDetails[0].order)
+                    for (const key of keys) {
+                        if (key == course.courseID) {
+                            purchased = true;
+                        }
                     }
                 }
             }
@@ -82,6 +84,7 @@ async function run() {
         //Add Orders API
         app.post('/orders', async (req, res) => {
             const order = req.body;
+            order.createdAt = new Date();
             //Taking the keys of order course ID in an array
             const orderIds = (Object.keys(req.body.order));
             //Checking whether any previous order exists of same user
