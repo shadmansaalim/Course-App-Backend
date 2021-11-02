@@ -1,0 +1,12 @@
+module.exports = {
+  type: "service_account",
+  project_id: "react-course-app-de231",
+  private_key_id: process.env.PRIVATE_KEY_ID,
+  private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCgBmd0A8G55cfS\nrrbD6Fr3a7vzZeYdoOE2yNbVG5tMbKHlrKIfJWiB+/8i31wSgldGdUB/AalXsprU\nlvofP6lEWsAdyQbDz7Jt7iQoXWeOvSzvPJF6yLqoPP1Iqec6YZ+liZkmr/1mCaIX\nLierrKUaXkx9syjM5b/tL5nMlzdMgMwl0ALWX75aTIJmCqiR/Lcqp6qu8eE87N8R\nzRLOD5dX6flxn0I6wuiGxAZBSRQ4PFhxGkhRilknLEyDvMf+8SjfX3JurmuxzyEs\nZYVEubPrmSML2TRx5EZGDfnbCu1GSCz587e2FYG/jY/6vDU3c6CKesrikwY4Kfy9\nmtD7mtEHAgMBAAECggEAEVNQLRPhDBbwMQPAfupvutz7rukH5opOB+frtov0Huye\nBKdRsCyVKYmWgHiNV+WrvFGih32vD3MjZ0PnVa3HTkLDDRaAOIAKsfM4D/S46w/Z\nRxeYKqKD7wYXaCAZDE2YgswofDNOrJb7aSYSnnglMfsmre9RSgnP40alkKyIjKwz\nLLsZUzGYtCVHY55fHC7BLrNbl0TbUiPyPrPajP1yE56v6iX6pBzd0KDBD2KNLNKJ\nIWs9zUyNuE2aHxxT9JmhblfzacwHRwhHS38np7veQXzH92VmjMTYGb1Rd9gC1w9z\nOUBmzZs/TZLo+zc0p8bCclpDcIL2ceV47+/xfnc1GQKBgQDdemnkVi6IG6mlpUI9\nHFRp54VWf4e00O3MJY4udArHYSDEo8KAomNk+p2cpDv4Hc1q2DA2JZ9d1+i/zbLw\nNC6An0jWGSPba0RFXTtOGkF1i8/UKQiFR31D218A7F4gpXbcaPFTe+Y3fRvUcmZD\n3oGwuYdPaX8XZEhlryo9UX6FGQKBgQC499dC8r8dd7Ix2XzclYCQwAC15rLxKXBL\nauFPup759TT93IhIzHigqeB3WsmoVGMPTAQhV2YHdJgfPTYFAHqtl0vIO80EzyeA\nswZiI+cGdOQwVquYxboonyCmhYXc/M8jxE84X2qpY4oMRfYVwIN0RueML41OEFW8\nKsjGYImrHwKBgQCOxIhaHovkRSC4nKz0Q7zOf+Xd+lt6XWvMuzDKFReVqrC60W1i\nCkvUHhFXli7qJBv0keOSI/J1RebNLUX5vUl0tDj5ej85BA6AQDcog5hKs5OHCeRq\nNckz4sd9CuEqXj8ema9mx2mBv24fJpdxjI9BYncs465/X6+jjKTH3i6WkQKBgAJ3\ne61u41GXSQ8VIW8np0FG7jt+yiAhN1gqIrsXeAtJU92W1VJzN6Cc41t0IIBYL8IC\nd4OiUMAEtAqmnFPQv9IU1HPlKETKJnK28HzakbgqUui6Hyu4Z1UnWh4eZbyeunx1\nn8DWtOtxYmPrgu6jVJ12XJwn/jBuU1ZhE7BhlTRtAoGBAK9deCTQx5wOkv1SMMBi\n3RyVNodSzZKj6psDECRpnNe7cZdDXPt8ltOiXTu1h0WK23ueJSxTLqDdNeo3chDW\nl7A776vjudXKCvXxeerkvBAOtL8UfiagO+FJvBimtow7LVh8iBwg2m+rH83qnNg6\n2LBvn2oMN2owcv+ZvPznAm7b\n-----END PRIVATE KEY-----\n",
+  client_email: process.env.CLIENT_EMAIL,
+  client_id: process.env.CLIENT_ID,
+  auth_uri: "https://accounts.google.com/o/oauth2/auth",
+  token_uri: "https://oauth2.googleapis.com/token",
+  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+  client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-sqs9o%40react-course-app-de231.iam.gserviceaccount.com"
+}

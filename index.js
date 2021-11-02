@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 
 
 //Firebase Admin Initialization
-var serviceAccount = require("./react-course-app-de231-firebase-adminsdk-sqs9o-79dc28a716.json");
+var serviceAccount = require("./react-course-app-de231-firebase-adminsdk-sqs9o-79dc28a716");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
