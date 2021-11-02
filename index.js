@@ -84,7 +84,6 @@ async function run() {
         //Add Orders API
         app.post('/orders', async (req, res) => {
             const order = req.body;
-            order.createdAt = new Date();
             //Taking the keys of order course ID in an array
             const orderIds = (Object.keys(req.body.order));
             //Checking whether any previous order exists of same user
@@ -119,7 +118,8 @@ async function run() {
             const options = {
                 projection: { _id: 0, order: 1 }
             }
-            const orderDetails = await orderCollection.find(query1, options).toArray();
+            const cursor = orderCollection.find(query1, options);
+            const orderDetails = await cursor.toArray();
             // Checking if user has any purchased course
             if (orderDetails.length) {
                 const keys = Object.keys(orderDetails[0].order)
