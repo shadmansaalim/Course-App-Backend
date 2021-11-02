@@ -5,10 +5,20 @@ const cors = require('cors');
 require('dotenv').config()
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require("nodemailer");
+var admin = require("firebase-admin");
 
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+
+//Firebase Admin Initialization
+var serviceAccount = require("./react-course-app-de231-firebase-adminsdk-sqs9o-79dc28a716.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
 
 //Middleware use
 app.use(cors());
@@ -18,6 +28,22 @@ app.use(express.json());
 //MONGO DB
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.up7gk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Function to verify user token so that API stays secure
+async function verifyToken(req, res, next) {
+    if (req.headers?.authorization?.startsWith('Bearer')) {
+        // Splitting the idToken by removing string "Bearer"
+        const courseIdToken = req.headers.authorization.split('Bearer ')[1];
+        try {
+            const decodedUser = await admin.auth().verifyIdToken(courseIdToken);
+            req.decodedUserEmail = decodedUser.email;
+        }
+        catch {
+
+        }
+    }
+    next();
+}
 
 
 async function run() {
@@ -111,24 +137,30 @@ async function run() {
 
         })
 
-        app.post('/myClasses', async (req, res) => {
-            const userEmail = req.body.email;
-            const query1 = { email: userEmail };
-            //Using options to get only the order field making code efficient
-            const options = {
-                projection: { _id: 0, order: 1 }
-            }
-            const cursor = orderCollection.find(query1, options);
-            const orderDetails = await cursor.toArray();
-            // Checking if user has any purchased course
-            if (orderDetails.length) {
-                const keys = Object.keys(orderDetails[0].order)
-                const query2 = { courseID: { $in: keys } };
-                const courses = await coursesCollection.find(query2).toArray();
-                res.json(courses)
+        app.get('/myClasses', verifyToken, async (req, res) => {
+            const userEmail = req.query.email;
+            if (req.decodedUserEmail === userEmail) {
+                const query1 = { email: userEmail };
+                //Using options to get only the order field making code efficient
+                const options = {
+                    projection: { _id: 0, order: 1 }
+                }
+                const cursor = orderCollection.find(query1, options);
+                const orderDetails = await cursor.toArray();
+                // Checking if user has any purchased course
+                if (orderDetails.length) {
+                    const keys = Object.keys(orderDetails[0].order)
+                    const query2 = { courseID: { $in: keys } };
+                    const courses = await coursesCollection.find(query2).toArray();
+                    res.json(courses)
+                }
+                else {
+                    res.json(0);
+                }
             }
             else {
-                res.json(0);
+                //Sending status of unauthorization
+                res.status(401).json({ message: 'User Not Authorized' })
             }
         })
 
