@@ -20,7 +20,7 @@ admin.initializeApp({
 });
 
 
-//Middleware use
+//Middleware use for server
 app.use(cors());
 app.use(express.json());
 
