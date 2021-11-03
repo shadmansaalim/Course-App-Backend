@@ -20,7 +20,7 @@ admin.initializeApp({
 });
 
 
-//Middleware use for server
+//Middleware use for server course
 app.use(cors());
 app.use(express.json());
 
