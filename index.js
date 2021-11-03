@@ -19,6 +19,17 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
+//Node mailer details
+let transporter = nodemailer.createTransport({
+    service: 'outlook',
+    auth: {
+        user: process.env.MY_MAIL,
+        pass: process.env.MY_PASS
+    }
+});
+
+
+
 
 //Middleware use for server course
 app.use(cors());
@@ -110,6 +121,7 @@ async function run() {
         //Add Orders API
         app.post('/orders', async (req, res) => {
             const order = req.body;
+            const name = order.name;
             //Taking the keys of order course ID in an array
             const orderIds = (Object.keys(req.body.order));
             //Checking whether any previous order exists of same user
@@ -133,8 +145,28 @@ async function run() {
             else {
                 result = await orderCollection.insertOne(order);
             }
-            res.json(result);
 
+            // Sending email to user
+            let mailOptions = {
+                from: 'shadmansaalim321@outlook.com',
+                to: order.email,
+                subject: 'Course Application By Developer Saalim',
+                text: `Dear ${name}, You have successfully purchased course from us. Now you can view your course in MyClasses section on our website. Thank you for being with us. This application is developed by Saalim Shadman, a Computer Science student at RMIT, Australia
+                `,
+            };
+
+
+            transporter.sendMail(mailOptions, function (err, data) {
+                if (err) {
+                    console.log('Error occurred ', err)
+                }
+                else {
+                    console.log('Email Sent');
+                }
+            })
+
+
+            res.json(result);
         })
 
         app.get('/myClasses', verifyToken, async (req, res) => {
