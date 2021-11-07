@@ -5,7 +5,7 @@ const cors = require('cors');
 require('dotenv').config()
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require("nodemailer");
-var admin = require("firebase-admin");
+const admin = require("firebase-admin");
 
 
 const app = express();
@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 
 
 //Firebase Admin Initialization
-var serviceAccount = require("./react-course-app-88b8d-firebase-adminsdk-h4zlz-81684f38d1");
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
