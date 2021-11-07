@@ -61,8 +61,10 @@ async function run() {
     try {
         await client.connect();
         const database = client.db("courseApp");
+        const usersCollection = database.collection("users");
         const coursesCollection = database.collection("courses");
         const orderCollection = database.collection("orders");
+
 
         //GET COURSES FROM DB
         app.get('/courses', async (req, res) => {
@@ -118,6 +120,28 @@ async function run() {
             res.json(courses);
         })
 
+
+        //Add users to database those who signed up with Email Password
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.json(result);
+        })
+
+        //Add users to database those who signed up with External Provider
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+
+        })
+
+
         //Add Orders API
         app.post('/orders', async (req, res) => {
             const order = req.body;
@@ -171,6 +195,7 @@ async function run() {
 
         app.get('/myClasses', verifyToken, async (req, res) => {
             const userEmail = req.query.email;
+            console.log(req.decodedUserEmail, userEmail);
             if (req.decodedUserEmail === userEmail) {
                 const query1 = { email: userEmail };
                 //Using options to get only the order field making code efficient
@@ -196,7 +221,6 @@ async function run() {
             }
         })
 
-        // app.post('/myClassesID')
 
 
     }
