@@ -64,6 +64,7 @@ async function run() {
         const usersCollection = database.collection("users");
         const coursesCollection = database.collection("courses");
         const orderCollection = database.collection("orders");
+        const reviewsCollection = database.collection("reviews");
 
 
         //GET COURSES FROM DB
@@ -195,7 +196,6 @@ async function run() {
 
         app.get('/myClasses', verifyToken, async (req, res) => {
             const userEmail = req.query.email;
-            console.log(req.decodedUserEmail, userEmail);
             if (req.decodedUserEmail === userEmail) {
                 const query1 = { email: userEmail };
                 //Using options to get only the order field making code efficient
@@ -219,6 +219,18 @@ async function run() {
                 //Sending status of unauthorization
                 res.status(401).json({ message: 'User Not Authorized' })
             }
+        })
+
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const result = await cursor.toArray();
+            res.json(result);
+        })
+
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
+            res.json(result);
         })
 
 
