@@ -6,6 +6,7 @@ require('dotenv').config()
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require("nodemailer");
 const admin = require("firebase-admin");
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
 
 const app = express();
@@ -151,23 +152,27 @@ async function run() {
             const orderIds = (Object.keys(req.body.order));
             //Checking whether any previous order exists of same user
             const query = { email: (order.email) };
-            const orderDetails = await orderCollection.find(query).toArray();
+            const orderDetails = await orderCollection.findOne(query);
+            console.log(order);
+            console.log(orderDetails)
             let result;
-            //If user exists with previous orders then Updating user's previous order details rather creating new one
-            if (orderDetails.length) {
+            // If user exists with previous orders then Updating user's previous order details rather creating new one
+            if (orderDetails) {
                 for (const id of orderIds) {
-                    (orderDetails[0].order)[id] = 1;
+                    (orderDetails.order)[id] = 1;
                 }
-                const filter = { _id: orderDetails[0]._id };
+                const filter = { _id: orderDetails._id };
                 const updateDoc = {
                     $set: {
-                        order: orderDetails[0].order
+                        order: orderDetails.order,
+                        payment: [...orderDetails.payment, order.payment]
                     },
                 };
                 result = await orderCollection.updateOne(filter, updateDoc);
             }
             //If user doesn't exists with orders then inserting new order
             else {
+                order.payment = [order.payment];
                 result = await orderCollection.insertOne(order);
             }
 
@@ -233,6 +238,20 @@ async function run() {
             res.json(result);
         })
 
+
+
+        app.post("/create-payment-intent", async (req, res) => {
+            const paymentInfo = req.body;
+            const amount = paymentInfo.price * 100;
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: "usd",
+                amount: amount,
+                payment_method_types: ['card']
+            })
+            res.json({
+                clientSecret: paymentIntent.client_secret,
+            });
+        });
 
 
     }
