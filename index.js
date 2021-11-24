@@ -226,15 +226,40 @@ async function run() {
             }
         })
 
-        app.get('/reviews', async (req, res) => {
-            const cursor = reviewsCollection.find({});
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const cursor = reviewsCollection.find(query);
             const result = await cursor.toArray();
+            console.log(result);
             res.json(result);
         })
 
-        app.post('/reviews', async (req, res) => {
+        app.put('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
             const review = req.body;
-            const result = await reviewsCollection.insertOne(review);
+            console.log(id, review)
+            const filter = { _id: ObjectId(id) };
+            const course = await reviewsCollection.findOne(filter);
+            const courseReviews = course?.reviews
+            const options = { upsert: true };
+            let result;
+            if (courseReviews) {
+                const updateDoc = {
+                    $set: {
+                        reviews: [...courseReviews, review]
+                    },
+                };
+                result = await reviewsCollection.updateOne(filter, updateDoc, options);
+            }
+            else {
+                const updateDoc = {
+                    $set: {
+                        reviews: [review]
+                    },
+                };
+                result = await reviewsCollection.updateOne(filter, updateDoc, options);
+            }
             res.json(result);
         })
 
@@ -252,7 +277,6 @@ async function run() {
                 clientSecret: paymentIntent.client_secret,
             });
         });
-
 
     }
     finally {
