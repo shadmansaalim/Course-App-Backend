@@ -10,7 +10,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 
 
 //Firebase Admin Initialization
